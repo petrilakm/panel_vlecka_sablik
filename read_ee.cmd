@@ -1,0 +1,1 @@
+avrdude -p m8 -c stk500v2 -P COM4 -U eeprom:r:BR101_eeprom_read.bin:r

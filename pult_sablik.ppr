@@ -1,0 +1,83 @@
+[Config]
+Compilator.FileName=X:\Michal\Elektronika\Projekty\KMZ\Doplnky\DPS_Sablik_pult\FW\go.cmd
+Compilator.DefaultDir=X:\Michal\Elektronika\Projekty\KMZ\Doplnky\DPS_Sablik_pult\FW
+Compilator.SaveAll=0
+Compilator.Capture=1
+Compilator.ParsLog=%F:%L:%C:* ; gcc
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+[Project tree]
+pult_sablik
+	+FW
+		+inc
+			inc\xpressnet.h
+			inc\xpressnet.c
+			inc\timer.h
+			inc\timer.c
+			inc\inputs.h
+			inc\inputs.c
+			inc\defines.h
+			inc\common_defs.h
+			inc\logic.h
+			inc\logic.c
+			inc\xn_accessory.h
+			inc\xn_accessory.c
+			inc\xn_stack.h
+			inc\xn_stack.c
+		pult_sablik.c
+		go2.cmd
+		go.cmd
+[Open project files]
+0=pult_sablik.c
+1=inc\xpressnet.c
+2=inc\xpressnet.h
+3=inc\xn_accessory.h
+4=inc\xn_accessory.c
+5=inc\logic.c
+6=inc\xn_stack.c
+7=inc\xn_stack.h
+8=go2.cmd
+9=go2.sh
+[Selected Project Files]
+Main=
+Selected=inc\xn_stack.c
+[pult_sablik.c]
+TopLine=79
+Caret=19,115
+[inc\xpressnet.c]
+TopLine=85
+Caret=30,105
+[inc\xpressnet.h]
+TopLine=35
+Caret=30,53
+[inc\xn_accessory.h]
+TopLine=1
+Caret=11,4
+[inc\xn_accessory.c]
+TopLine=114
+Caret=1,128
+[inc\logic.c]
+TopLine=183
+Caret=29,216
+[inc\xn_stack.c]
+TopLine=56
+Caret=14,33
+[inc\xn_stack.h]
+TopLine=13
+Caret=13,17
+[go2.cmd]
+TopLine=1
+Caret=1,1
+[go2.sh]
+TopLine=1
+Caret=1,15
