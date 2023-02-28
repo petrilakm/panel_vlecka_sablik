@@ -1,1 +1,1 @@
-avrdude -P COM4 -c STK500v2 -p m8
+avrdude -P COM13 -c STK500v2 -p m8

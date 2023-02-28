@@ -3,7 +3,7 @@
 
 //----------------------------------------------------
 
-#define DEBOUNCE_NUM    (2)
+#define DEBOUNCE_NUM    (3)
 
 //----------------------------------------------------
 extern byte inp[3];      // buttons states for program

@@ -2,6 +2,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "defines.h"
+#include "xn_stack.h"
 
 #define BAUD 62500
 #include <util/setbaud.h>
@@ -169,6 +170,7 @@ static inline void _uart_received_ninth(uint8_t data) {
 			_uart_send_buf();
 
 		uart_addressed_counter = 0;
+                        xns_ack();
 		if (!uart_device_addressed) {
 			uart_device_addressed = true;
 			if (uart_on_addressed != NULL)

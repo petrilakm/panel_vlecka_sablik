@@ -10,6 +10,10 @@ byte xns_queue_begin;
 
 byte xnmsg[4] = {0,0,0,0};
 
+byte dbg = 0;
+
+byte xns_ack_cnt = 0;
+
 
 byte _xns_queue_plusone(byte i)
 {
@@ -30,6 +34,7 @@ void xns_init(void)
   xns_queue_begin = 0;
 }
 // add item to queue from xn_buf
+// add data to first empty slot
 void xns_send(void)
 {
   byte i, pos,pos_w;
@@ -60,7 +65,7 @@ void xns_loop(void)
   //
   byte pos, len;
   pos = xns_queue_begin;
-  if (xns_queue[pos].status > 0) {
+  if (xns_queue[pos].status == xnqs_new) {
     // data in queue
     if (uart_can_fill_output_buf()) {
       // outgoing channel is ready
@@ -73,12 +78,49 @@ void xns_loop(void)
       }
       // try to send
       uart_send(xns_queue[pos].data, len);
-      // ToDo: parse ack message 
+      xns_queue[pos].status = xnqs_send; // change state to next
+      // xns_queue_begin remains - message wait for acknowledgement or other inquiry 
     }
    } else {
-    // begin points to empty slot, advance to next 
-    xns_queue_begin = _xns_queue_plusone(xns_queue_begin);
+    // begin points to empty slot, advance to next slot
+    // so we scan every slot for valid data
+    //pos = _xns_queue_plusone(xns_queue_begin);
+    if (xns_queue[pos].status == xnqs_empty) {
+      xns_queue_begin = _xns_queue_plusone(xns_queue_begin);
+    }
   }
-
 }
 
+void xns_ack(void)
+{
+  byte pos;
+  pos = xns_queue_begin;
+  if (xns_queue[pos].status == xnqs_send) {
+    xns_ack_cnt++;
+    if (xns_ack_cnt > XNS_MESSAGES_TIMESTEP) {
+      xns_queue[pos].status = xnqs_empty; // data send, clear now empty slot
+      xns_ack_cnt = 0;
+      // xns_queue_begin will be incremeted in loop function
+    }
+  }
+}
+
+void xns_busy(void)
+{
+  dbg++;
+  byte pos;
+  pos = xns_queue_begin;
+  if (xns_queue[pos].status == xnqs_send) {
+    xns_ack_cnt = 0;
+    xns_queue[pos].status = xnqs_new;
+  }
+}
+
+byte xns_empty_queue(void)
+{
+  byte i;
+  for(i=0; i<XNS_SIZE; i++) {
+    if (xns_queue[i].status != xnqs_empty) return 0;
+  }
+  return 1;
+}

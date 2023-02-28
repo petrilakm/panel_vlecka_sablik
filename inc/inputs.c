@@ -336,7 +336,7 @@ void io_loop(void)
   // 0x20 - get real state
   // 0x40 - debounce
   // 0x60 - propagate results
-  
+  if (io_loop_state == 0) io_loop_state = 1;
   if (io_flag_10Hz) {
     io_flag_10Hz = false;
     // start io sequence

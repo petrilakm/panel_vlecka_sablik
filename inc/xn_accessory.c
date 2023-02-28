@@ -72,7 +72,9 @@ void xnacc_turnout_action(word num, byte state)
     addr_lo = ((num) & 0x03) << 1;
     xnmsg[0] = 0x52;
     xnmsg[1] = addr_hi;
-    xnmsg[2] = addr_lo | ((state & 1)) | 0x80; // activate
+    xnmsg[2] = addr_lo | ((state & 1)) | 0x88; // press
+    xns_send();
+    xnmsg[2] = addr_lo | ((state & 1)) | 0x80; // release
     xns_send();
     //uart_send(xnmsg, 4);
   }
@@ -105,15 +107,20 @@ void xnacc_uart_parse_buffer(void)
 {
   // power status announcement
   if (xnacc_buffer_size == 3) {
-    if (xnacc_buffer[0] == 0x61) {
-      if (xnacc_buffer[1] == 0x01) {
-        xnacc_poweron = 1;
-       } else {
-        xnacc_poweron = 0;
-      }
-    }
-    if ((xnacc_buffer[0] == 0x81) || (xnacc_buffer[1] == 0x00)) {
+    if ((xnacc_buffer[0] == 0x61) && (xnacc_buffer[1] == 0x00)) { // aus
       xnacc_poweron = 0;
+    }
+    if ((xnacc_buffer[0] == 0x61) && (xnacc_buffer[1] == 0x01)) { // go
+      xnacc_poweron = 1;
+    }
+    if ((xnacc_buffer[0] == 0x81) && (xnacc_buffer[1] == 0x00)) { // estop
+      xnacc_poweron = 0;
+    }
+    if ((xnacc_buffer[0] == 0x61) && (xnacc_buffer[1] == 0x02)) { // service mode
+      xnacc_poweron = 0;
+    }
+    if ((xnacc_buffer[0] == 0x61) && (xnacc_buffer[1] == 0x81)) { // busy
+      xns_busy();
     }
   }
 
@@ -192,8 +199,8 @@ void xnacc_uart_parse_acessoryinputs(uint8_t data1, uint8_t data2)
 void xnacc_uart_on_addressed(void)
 {
   // command center is available
-  xnacc_ccavail = true;
   xnacc_trackpower_request();
+  xnacc_ccavail = true;
 }
 
 void xnacc_uart_on_addressed_stopped(void)
