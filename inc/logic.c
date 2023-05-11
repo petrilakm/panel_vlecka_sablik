@@ -7,6 +7,11 @@
 #include "xn_stack.h" // debug
 #include "logic.h"
 
+#define ADDR_SE (63)
+#define ADDR_OSV1 (137)
+#define ADDR_OSV2 (138)
+#define ADDR_OSV3 (139)
+
 /*
  * usable functions:
  * 
@@ -21,16 +26,12 @@ void do_pult_logic_internal(void);
 byte logic_event_flag;
 
 byte logic_nocom_cnt = 0;
-#define logic_nocom_cnt_max (6+1)
+#define logic_nocom_cnt_max (10+1)
 
 byte logic_flag_10Hz = 0; // private
 byte logic_state = 0; // private
 #define LOGIC_INITTIMER_MAX (10)
 byte logic_inittimer = LOGIC_INITTIMER_MAX; // private
-//byte logic_dcctimer = 60; // private, chack dcc status
-
-byte logic_navstate = 0;
-byte logic_osvstate[3] = {0,0,0};
 
 // indikace AUS
 byte logic_indstate;  // on
@@ -79,8 +80,32 @@ void logic_turnout_indicate(byte num, byte out)
   }
 }
 
+bool logic_turnout_get(byte num)
+{
+  num--;
+  if (xnacc_turnout_state[num] == 0) {
+    return false;
+  }
+  if (xnacc_turnout_state[num] == 1) {
+    return true;
+  }
+  return false;
+}
+
+void logic_turnout_operate(byte num)
+{
+  bool state;
+  state = logic_turnout_get(num);
+  if (state) {
+    xnacc_turnout_action(num, 0);
+  } else {
+    xnacc_turnout_action(num, 1);
+  }
+}
+
 void do_pult_logic_internal(void)
-{ 
+{
+  bool state;
   if (xnacc_poweron) {
     logic_indstate = 1; // power on -> steady LED
     logic_indstate0= 0; // power on -> steady off
@@ -103,10 +128,10 @@ void do_pult_logic_internal(void)
       logic_turnout_indicate(9,14); // 7
       break;
     case 3:
-      if (logic_navstate) {  // Se indicate
-        io_set_state(16, 1); // povolen
+      if (logic_turnout_get(ADDR_SE)) {  // Se indicate
+        io_set_state(16, 0); // povolen
        } else {
-        io_set_state(16, 0); // zakázán
+        io_set_state(16, 1); // zakázán
       }
       if (io_get_change_on(0)) xnacc_turnout_action(4, 1); // button 0 operate turnout 4 to position +
       if (io_get_change_on(1)) xnacc_turnout_action(4, 0); // button 1 operate turnout 4 to position -
@@ -119,28 +144,22 @@ void do_pult_logic_internal(void)
       if (io_get_change_on(6)) xnacc_turnout_action(11, 1);// button 6 operate turnout 11 to position +
       break;
     case 5:
-      if (io_get_change_on(7)) xnacc_turnout_action(11, 0);// button 7 operate turnout 11 to position
-      if (io_get_change_on(8)) xnacc_turnout_action(9, 0); // button 8 operate turnout 9 to position 0
-      if (io_get_change_on(9)) xnacc_turnout_action(9, 1); // button 9 operate turnout 9 to position 1
-      if (io_get_change_on(10)) { // Se operate
-        if (xnacc_poweron) logic_navstate ^= 1;
-        xnacc_turnout_action(63, logic_navstate);   // operate Se signal
+	  if (xnacc_poweron) {
+        if (io_get_change_on(7)) xnacc_turnout_action(11, 0);// button 7 operate turnout 11 to position
+        if (io_get_change_on(8)) xnacc_turnout_action(9, 0); // button 8 operate turnout 9 to position 0
+        if (io_get_change_on(9)) xnacc_turnout_action(9, 1); // button 9 operate turnout 9 to position 1
+		if (io_get_change_on(10)) {
+		  state = logic_turnout_get(ADDR_SE);
+          xnacc_turnout_action(ADDR_SE, !state);   // operate Se signal
+		}
       }
       break;
     case 6:
-      if (io_get_change_on(11)) {
-        if (xnacc_poweron) logic_osvstate[0] ^= 1;
-        xnacc_turnout_action(137, logic_osvstate[0]);   // operate osvìtlení 1
-      }
-      if (io_get_change_on(12)) {
-        if (xnacc_poweron) logic_osvstate[1] ^= 1;
-        xnacc_turnout_action(138, logic_osvstate[1]);   // operate osvìtlení 2
-      }
-      if (io_get_change_on(13)) {
-        if (xnacc_poweron) logic_osvstate[2] ^= 1;
-        xnacc_turnout_action(139, logic_osvstate[2]);   // operate osvìtlení 3
-      }
-      
+	    if (xnacc_poweron) {
+        if (io_get_change_on(11)) logic_turnout_operate(ADDR_OSV1);   // operate osvìtlení 1
+        if (io_get_change_on(12)) logic_turnout_operate(ADDR_OSV2);   // operate osvìtlení 2
+        if (io_get_change_on(13)) logic_turnout_operate(ADDR_OSV3);   // operate osvìtlení 3
+	  }
       break;
     case 7:
       if (io_get_change_on(14)) {
@@ -200,21 +219,16 @@ void do_pult_logic(void)
     logic_indstate0= 2;
   }
 
-  
   if (logic_flag_10Hz) {
     logic_flag_10Hz = false;
     // start logic state machine
     if (logic_state == 0) {
       logic_state = 1;
     }
-    
-    logic_nocom_cnt++;
-    
-    if (xnacc_ccavail) {
-      //if ((logic_inittimer == 0) || (logic_inittimer == LOGIC_INITTIMER_MAX)) { // after init or no init
-        //if (logic_dcctimer > 0) logic_dcctimer--;
-      //}
 
+    logic_nocom_cnt++;
+
+    if (xnacc_ccavail) {
       // count inittimer
       if (logic_inittimer > 0) {
        logic_inittimer--;
@@ -225,6 +239,10 @@ void do_pult_logic(void)
         xnacc_feedback_request(7);
         xnacc_feedback_request(9);
         xnacc_feedback_request(11);
+		xnacc_feedback_request(63); // Se
+		xnacc_feedback_request(137); // svìtla 1
+		xnacc_feedback_request(138); // svìtla 2
+		xnacc_feedback_request(139); // svìtla 3
       }
       // 4 - reserved
       if (logic_inittimer == 3) {
@@ -250,7 +268,7 @@ void do_pult_logic(void)
       }
     }
   }
-  
+
   if (xnacc_ccavail) {
     do_pult_logic_internal();
   }
@@ -259,7 +277,7 @@ void do_pult_logic(void)
     // není DCC a neprobìhla celá inicializace
     logic_inittimer = LOGIC_INITTIMER_MAX; // inicializace znova
   } 
-    
+
   if (!xnacc_ccavail) {
     logic_inittimer = LOGIC_INITTIMER_MAX;
     // command center is not available (no communication)
@@ -273,11 +291,10 @@ void do_pult_logic(void)
      } else {
       io_set_state((logic_nocom_cnt-1)*2  , 0);
       io_set_state((logic_nocom_cnt-1)*2+1, 0);
-    
+
     }
     io_set_state(logic_nocom_cnt*2, 3);
     io_set_state(logic_nocom_cnt*2+1, 3);
-    
   }
 }
 

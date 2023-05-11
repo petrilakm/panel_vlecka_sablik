@@ -48,7 +48,6 @@ byte xnacc_trackpower_request(void)
   xnacc_req_addr = 255;
   xns_send();
   return 0;
-  //return uart_send(xnmsg, 3);
 }
 
 
@@ -58,13 +57,6 @@ void xnacc_turnout_action(word num, byte state)
   byte addr_lo;
   
   num--;
-
-  // indicate no position
-  /*
-  if (xnacc_turnout_state[num] == (state+1)) {
-    xnacc_turnout_state[num] = 0;
-  }
-  */
   
   // if track power on, send request to turnout action
   if (xnacc_poweron) {
@@ -76,7 +68,6 @@ void xnacc_turnout_action(word num, byte state)
     xns_send();
     xnmsg[2] = addr_lo | ((state & 1)) | 0x80; // release
     xns_send();
-    //uart_send(xnmsg, 4);
   }
 }
 
@@ -146,54 +137,51 @@ void xnacc_uart_parse_buffer(void)
     }
   }
 
-    word num;
-    // catch acc data
-  //if (xnacc_buffer_size == 4) {
-    if (xnacc_buffer[0] == 0x42) {
-      //acessory information
-      // parse all posible data
-      num = 1;
-      xnacc_buffer_size -= 2; // korekce pro while podmínku
-      while (num < xnacc_buffer_size) {
+  word num;
+  // catch acc data
+  if (xnacc_buffer[0] == 0x42) {
+    //acessory information
+    // parse all posible data
+    num = 1;
+    xnacc_buffer_size -= 2; // korekce pro while podmínku
+    while (num < xnacc_buffer_size) {
         xnacc_uart_parse_acessoryinputs(xnacc_buffer[num], xnacc_buffer[num+1]);
         num += 2; 
-      }
     }
-  //}
+  }
 }
 
 void xnacc_uart_parse_acessoryinputs(uint8_t data1, uint8_t data2)
 {
   word num; // decoded number (external address)
   // load actual state from RS packet
-      num = (data1 << 1) | ((data2 & 0b00010000) >> 4); // get module address
-      // indicate successful reception if requested
-      if (!xnacc_req_ok) {
-        if (xnacc_req_addr == num) {
-          xnacc_req_ok = true;
-        }
-      }
-      switch (data2 & 0x03) { // low nibble
-        case 1: // -
-          xnacc_turnout_state[num*2  ] = 2;
-          break;
-        case 2: // +
-          xnacc_turnout_state[num*2  ] = 1;
-          break;
-        default:
-          xnacc_turnout_state[num*2  ] = 0;      
-      }
-      switch ((data2 & 0x0C) >> 2) { // high nibble
-        case 1: // -
-          xnacc_turnout_state[num*2+1] = 2;
-          break;
-        case 2: // +
-          xnacc_turnout_state[num*2+1] = 1;
-          break;
-        default:
-          xnacc_turnout_state[num*2+1] = 0;      
-      }       
-
+  num = (data1 << 1) | ((data2 & 0b00010000) >> 4); // get module address
+  // indicate successful reception if requested
+  if (!xnacc_req_ok) {
+    if (xnacc_req_addr == num) {
+      xnacc_req_ok = true;
+    }
+  }
+  switch (data2 & 0x03) { // low nibble
+    case 1: // -
+      xnacc_turnout_state[num*2  ] = 2;
+      break;
+    case 2: // +
+      xnacc_turnout_state[num*2  ] = 1;
+      break;
+    default:
+      xnacc_turnout_state[num*2  ] = 0;
+  }
+  switch ((data2 & 0x0C) >> 2) { // high nibble
+    case 1: // -
+      xnacc_turnout_state[num*2+1] = 2;
+      break;
+    case 2: // +
+      xnacc_turnout_state[num*2+1] = 1;
+      break;
+    default:
+      xnacc_turnout_state[num*2+1] = 0;
+  }
 }
 
 void xnacc_uart_on_addressed(void)
