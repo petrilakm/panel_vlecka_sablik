@@ -1,6 +1,6 @@
 @echo off
 echo.
-del pult_sablik.elf
+del obj\pult_sablik.elf
 echo.
 echo *** Linking ***
 avr-gcc -mmcu=atmega128 obj\xn_stack.o obj\xn_accessory.o obj\logic.o obj\timer.o obj\xpressnet.o obj\inputs.o obj\pult_sablik.o -o obj\pult_sablik.elf -Wl,--start-group -Wl,--end-group -Wl,--gc-sections -g -Wa,-adhlns=aa.lst -Wa,-L
