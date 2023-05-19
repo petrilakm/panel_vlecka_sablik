@@ -1,4 +1,4 @@
-// Logic of control panel
+Ôªø// Logic of control panel
 
 #include "common_defs.h"
 #include "defines.h"
@@ -131,7 +131,7 @@ void do_pult_logic_internal(void)
       if (logic_turnout_get(ADDR_SE)) {  // Se indicate
         io_set_state(16, 0); // povolen
        } else {
-        io_set_state(16, 1); // zak·z·n
+        io_set_state(16, 1); // zak√°z√°n
       }
       if (io_get_change_on(0)) xnacc_turnout_action(4, 1); // button 0 operate turnout 4 to position +
       if (io_get_change_on(1)) xnacc_turnout_action(4, 0); // button 1 operate turnout 4 to position -
@@ -144,61 +144,61 @@ void do_pult_logic_internal(void)
       if (io_get_change_on(6)) xnacc_turnout_action(11, 1);// button 6 operate turnout 11 to position +
       break;
     case 5:
-	  if (xnacc_poweron) {
+      if (xnacc_poweron) {
         if (io_get_change_on(7)) xnacc_turnout_action(11, 0);// button 7 operate turnout 11 to position
         if (io_get_change_on(8)) xnacc_turnout_action(9, 0); // button 8 operate turnout 9 to position 0
         if (io_get_change_on(9)) xnacc_turnout_action(9, 1); // button 9 operate turnout 9 to position 1
-		if (io_get_change_on(10)) {
-		  state = logic_turnout_get(ADDR_SE);
+        if (io_get_change_on(10)) {
+          state = logic_turnout_get(ADDR_SE);
           xnacc_turnout_action(ADDR_SE, !state);   // operate Se signal
-		}
+        }
       }
       break;
     case 6:
-	    if (xnacc_poweron) {
-        if (io_get_change_on(11)) logic_turnout_operate(ADDR_OSV1);   // operate osvÏtlenÌ 1
-        if (io_get_change_on(12)) logic_turnout_operate(ADDR_OSV2);   // operate osvÏtlenÌ 2
-        if (io_get_change_on(13)) logic_turnout_operate(ADDR_OSV3);   // operate osvÏtlenÌ 3
-	  }
+      if (xnacc_poweron) {
+        if (io_get_change_on(11)) logic_turnout_operate(ADDR_OSV1);   // operate osvƒõtlen√≠ 1
+        if (io_get_change_on(12)) logic_turnout_operate(ADDR_OSV2);   // operate osvƒõtlen√≠ 2
+        if (io_get_change_on(13)) logic_turnout_operate(ADDR_OSV3);   // operate osvƒõtlen√≠ 3
+      }
       break;
     case 7:
       if (io_get_change_on(14)) {
-        xnacc_turnout_action(129, 1);   // operate rozpojovaË 1 on
+        xnacc_turnout_action(129, 1);   // operate rozpojovaƒç 1 on
       }
       if (io_get_change_off(14)) {
-        xnacc_turnout_action(129, 2);   // operate rozpojovaË 1 off
+        xnacc_turnout_action(129, 2);   // operate rozpojovaƒç 1 off
       }
       if (io_get_change_on(15)) {
-        xnacc_turnout_action(130, 1);   // operate rozpojovaË 2 on
+        xnacc_turnout_action(130, 1);   // operate rozpojovaƒç 2 on
       }
       if (io_get_change_off(15)) {
-        xnacc_turnout_action(130, 2);   // operate rozpojovaË 2 off
+        xnacc_turnout_action(130, 2);   // operate rozpojovaƒç 2 off
       }
       if (io_get_change_on(16)) {
-        xnacc_turnout_action(131, 1);   // operate rozpojovaË 3 on
+        xnacc_turnout_action(131, 1);   // operate rozpojovaƒç 3 on
       }
       if (io_get_change_off(16)) {
-        xnacc_turnout_action(131, 2);   // operate rozpojovaË 3 off
+        xnacc_turnout_action(131, 2);   // operate rozpojovaƒç 3 off
       }
       if (io_get_change_on(17)) {
-        xnacc_turnout_action(132, 1);   // operate rozpojovaË 4 on
+        xnacc_turnout_action(132, 1);   // operate rozpojovaƒç 4 on
       }
       if (io_get_change_off(17)) {
-        xnacc_turnout_action(132, 2);   // operate rozpojovaË 4 off
+        xnacc_turnout_action(132, 2);   // operate rozpojovaƒç 4 off
       }
       break;
     case 8:
       if (io_get_change_on(18)) {
-        xnacc_turnout_action(133, 1);   // operate rozpojovaË 5
+        xnacc_turnout_action(133, 1);   // operate rozpojovaƒç 5
       }
       if (io_get_change_off(18)) {
-        xnacc_turnout_action(133, 2);   // operate rozpojovaË 5
+        xnacc_turnout_action(133, 2);   // operate rozpojovaƒç 5
       }
       if (io_get_change_on(19)) {
-        xnacc_turnout_action(134, 1);   // operate rozpojovaË 6
+        xnacc_turnout_action(134, 1);   // operate rozpojovaƒç 6
       }
       if (io_get_change_off(19)) {
-        xnacc_turnout_action(134, 2);   // operate rozpojovaË 6
+        xnacc_turnout_action(134, 2);   // operate rozpojovaƒç 6
       }
       break;
   }
@@ -239,10 +239,10 @@ void do_pult_logic(void)
         xnacc_feedback_request(7);
         xnacc_feedback_request(9);
         xnacc_feedback_request(11);
-		xnacc_feedback_request(63); // Se
-		xnacc_feedback_request(137); // svÏtla 1
-		xnacc_feedback_request(138); // svÏtla 2
-		xnacc_feedback_request(139); // svÏtla 3
+        xnacc_feedback_request(63); // Se
+        xnacc_feedback_request(137); // svƒõtla 1
+        xnacc_feedback_request(138); // svƒõtla 2
+        xnacc_feedback_request(139); // svƒõtla 3
       }
       // 4 - reserved
       if (logic_inittimer == 3) {
@@ -256,10 +256,10 @@ void do_pult_logic(void)
         for(i = 0; i < 20; i++) {
           sum += xnacc_turnout_state[i];
         }
-        if (sum > 3) logic_inittimer = 0; // pokud m·me nÏjak˝ stav, tak p¯estaneme s inicializacÌ (centr·la nenÌ po restartu)
+        if (sum > 3) logic_inittimer = 0; // pokud m√°me nƒõjak√Ω stav, tak p≈ôestaneme s inicializac√≠ (centr√°la nen√≠ po restartu)
       }
       if (logic_inittimer == 1) {
-        xnacc_turnout_action(4, 1); // nastavit p¯estavnÌk s adresou 4 do +
+        xnacc_turnout_action(4, 1); // nastavit p≈ôestavn√≠k s adresou 4 do +
         xnacc_turnout_action(5, 1);
         xnacc_turnout_action(7, 1);
         xnacc_turnout_action(9, 1);
@@ -274,7 +274,7 @@ void do_pult_logic(void)
   }
   
   if ((!xnacc_poweron) && (logic_inittimer > 0)) {
-    // nenÌ DCC a neprobÏhla cel· inicializace
+    // nen√≠ DCC a neprobƒõhla cel√° inicializace
     logic_inittimer = LOGIC_INITTIMER_MAX; // inicializace znova
   } 
 

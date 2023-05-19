@@ -1,4 +1,4 @@
-#ifndef _XPRESSNET_H_
+﻿#ifndef _XPRESSNET_H_
 #define _XPRESSNET_H_
 
 /* XpressNET communication lirary (via UART).

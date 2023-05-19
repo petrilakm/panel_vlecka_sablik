@@ -1,4 +1,4 @@
-#ifndef _XN_STACK_H_
+﻿#ifndef _XN_STACK_H_
 #define _XN_STACK_H_
 
 //include dependencies

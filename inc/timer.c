@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  *
  * timer initialization and operation
  *
@@ -10,18 +10,18 @@
 //----------------------------------------------------
 void timer_init(void)
 {
-  // Xtal = 14 745 600 Hz
-  // Xtal =  1 000 000 Hz
+  // Xtal = 14Â 745Â 600 Hz
+  // Xtal =  1Â 000Â 000 Hz
 
   // * Timer 0 - fast system timer
   // 14745600 /    8   / 256 = 7200 Hz (0.1388888 ms)
   // 1000000 /    8   / 256 = 492.1259842.. Hz (0.1388888 ms)
   //   Xtal   / presca / TOP
-  TCCR0 = 2; // ÷ 8
+  TCCR0 = 2; // Ã· 8
   //TIMSK |= BV(TOIE0);
 
 
-  // * Timer 1 - system timer and 2× PWM
+  // * Timer 1 - system timer and 2Ã— PWM
   // 14745600 / 256 / 576 = 100 Hz
   // 1 000 000  / 256 / 39 = 100.160256.. Hz
   //   Xtal  /presca/ TOP

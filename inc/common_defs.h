@@ -1,4 +1,4 @@
-#ifndef __COMMON_DEFS_DEFINED
+﻿#ifndef __COMMON_DEFS_DEFINED
 #define __COMMON_DEFS_DEFINED
 
 #include <stdint.h>

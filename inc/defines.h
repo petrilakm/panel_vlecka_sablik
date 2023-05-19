@@ -1,4 +1,4 @@
-#ifndef __DEFINES_H
+﻿#ifndef __DEFINES_H
 #define __DEFINES_H
 
 /***********************

@@ -1,4 +1,4 @@
-// Read & Send XpressNET accessory messages
+﻿// Read & Send XpressNET accessory messages
 
 #include "common_defs.h"
 #include "defines.h"
@@ -143,7 +143,7 @@ void xnacc_uart_parse_buffer(void)
     //acessory information
     // parse all posible data
     num = 1;
-    xnacc_buffer_size -= 2; // korekce pro while podm�nku
+    xnacc_buffer_size -= 2; // korekce pro while podmínku
     while (num < xnacc_buffer_size) {
         xnacc_uart_parse_acessoryinputs(xnacc_buffer[num], xnacc_buffer[num+1]);
         num += 2; 

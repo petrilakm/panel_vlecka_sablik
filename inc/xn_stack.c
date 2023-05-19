@@ -1,4 +1,4 @@
-// stack (queue) for XPressNET library
+﻿// stack (queue) for XPressNET library
 
 // stack can hold multiple messages to send
 // if command station is busy, messege is repeated

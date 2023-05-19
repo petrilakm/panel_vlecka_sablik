@@ -1,4 +1,4 @@
-#ifndef _INPUTS_H_
+﻿#ifndef _INPUTS_H_
 #define _INPUTS_H_
 
 //----------------------------------------------------

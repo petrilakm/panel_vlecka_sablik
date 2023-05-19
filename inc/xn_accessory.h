@@ -1,4 +1,4 @@
-#ifndef _XN_ACC_H_
+﻿#ifndef _XN_ACC_H_
 #define _XN_ACC_H_
 
 #include "common_defs.h"
